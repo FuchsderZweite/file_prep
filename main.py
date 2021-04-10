@@ -4,16 +4,8 @@ import os
 
 
 
-base_dir = r'C:\Users\Sergej Grischagin\Desktop\40kVs'
+base_dir = r'C:\Users\Sergej Grischagin\Desktop\test_data'
 
-#pattern '*_0_????' + '.' + suffix
-def replace_sign(dir, replace, replace_with):
-    for file in os.listdir(dir):
-        if "blah" in file:
-            continue
-
-        if file contains '_0_':
-            replace '_0_' with '_flats_'
 
 
 
@@ -27,8 +19,21 @@ def separate_suffix(filename):
 
 
 
+
+#pattern '*_0_????' + '.' + suffix
+#if file contains '_0_' than replace '_0_' with 'flats'
+def rename_file(dir, rep, repw):
+    for root, dirs, files in os.walk(".", topdown=False):
+        if rep in files:
+            files = files.replace(rep, repw)
+
+       # if file contains '_0_':
+       #     replace '_0_' with '_flats_'
+
+
+
 def main():
-    replace_sign(base_dir, replace='_0000_', replace_with='4mm_8mm')
+    rename_file(base_dir, rep='_0_', repw='_flats_')
 
 
 if __name__ == '__main__':
