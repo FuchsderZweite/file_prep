@@ -1,8 +1,4 @@
 import os
-import time
-
-#fill in your path ' '
-base_dir = r' '
 
 def separate_suffix(filename):
     split_list = filename.split('.')
@@ -12,7 +8,7 @@ def separate_suffix(filename):
     else:
         return filename, ''
 
-def rename_file(dir=None, rep=None, repw=None):
+def rename_file(dir, rep, repw):
     if isinstance(dir, str) and isinstance(rep, str) and isinstance(repw, str):
         n = 0
         for subdir, dirs, files in os.walk(dir):
@@ -34,7 +30,10 @@ def rename_file(dir=None, rep=None, repw=None):
         print(f'=> passed value for {repw} is a {type(repw)}')
 
 def main():
-    rename_file(dir=None, rep="a", repw=2)
+    base_dir = r' '
+    replace = ''
+    replace_with = ' '
+    rename_file(dir=base_dir, rep=replace, repw=replace_with)
 
 if __name__ == '__main__':
     main()
