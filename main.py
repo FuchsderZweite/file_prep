@@ -1,12 +1,6 @@
-import numpy as np
-import fnmatch
 import os
 
-
-
-base_dir = r'C:\Users\Sergej Grischagin\Desktop\test_data'
-
-
+base_dir = r'/home/sergej/Desktop/abc/'
 
 
 def separate_suffix(filename):
@@ -18,22 +12,24 @@ def separate_suffix(filename):
         return filename, ''
 
 
-
-
-#pattern '*_0_????' + '.' + suffix
-#if file contains '_0_' than replace '_0_' with 'flats'
 def rename_file(dir, rep, repw):
-    for root, dirs, files in os.walk(".", topdown=False):
-        if rep in files:
-            files = files.replace(rep, repw)
-
-       # if file contains '_0_':
-       #     replace '_0_' with '_flats_'
+    n = 0
+    for subdir, dirs, files in os.walk(dir):
+        for file in files:
+            if rep in file:
+                n += 1
+                new_file = file.replace(rep, repw, 1)
+                os.rename(os.path.join(subdir, file), os.path.join(subdir, new_file))
+                print(new_file)
+    if 0 < n:
+        print(f'Done. {n} files were renamed.')
+    else:
+        print(f'No {rep} were found. Are you sure you spelled {rep} correct? Also check base directory.')
 
 
 
 def main():
-    rename_file(base_dir, rep='_0_', repw='_flats_')
+    rename_file(base_dir, rep='GFK', repw='TEST')
 
 
 if __name__ == '__main__':
