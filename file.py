@@ -1,8 +1,8 @@
 import os
 import time
 
+#fill in your path ' '
 base_dir = r'/home/sergej/Desktop/abc'
-
 
 def separate_suffix(filename):
     split_list = filename.split('.')
@@ -12,11 +12,8 @@ def separate_suffix(filename):
     else:
         return filename, ''
 
-
 def rename_file(dir=None, rep=None, repw=None):
     if dir and rep and repw is not None:
-        start_time = time.time()
-
         n = 0
         for subdir, dirs, files in os.walk(dir):
             for file in files:
@@ -29,12 +26,9 @@ def rename_file(dir=None, rep=None, repw=None):
             print(f'Done. {n} files were renamed.')
         else:
             print(f'No {rep} were found. Are you sure you spelled {rep} correct? Also check base directory.')
-        print("--- %s seconds ---" % (time.time() - start_time))
-
 
 def main():
-    rename_file(base_dir, rep='TEST', repw='GFK')
-
+    rename_file(dir=base_dir, rep='TEST', repw='GFK')
 
 if __name__ == '__main__':
     main()
