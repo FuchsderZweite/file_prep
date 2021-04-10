@@ -2,7 +2,7 @@ import os
 import time
 
 #fill in your path ' '
-base_dir = r'/home/sergej/Desktop/abc'
+base_dir = r' '
 
 def separate_suffix(filename):
     split_list = filename.split('.')
