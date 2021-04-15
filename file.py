@@ -58,9 +58,7 @@ def rename_file(path, rep, repw):
 
 
 def main():
-    base_dir = r'\\132.187.193.8\junk\sgrischagin\Dritte_Messung'
-    #replace = '_00_'
-    #replace_with = '_4u8mm_'
+    base_dir = r'.'
     list_rep = ['_00_', '_000_', '_0000_', '_00000_']
     list_repw = ['_4u8mm_', '_12u16mm_', '_20u24mm_', '_28u32mm_']
 
