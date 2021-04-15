@@ -1,5 +1,6 @@
 import os
 import glob
+import datetime
 
 def separate_suffix(filename):
     split_list = filename.split('.')
@@ -10,32 +11,29 @@ def separate_suffix(filename):
         return filename, ''
 
 
+def remove_file(dir, rm, log):
+    path = glob.glob(dir + '\\*')
+    for k in range(len(path)):
+        for i in range(len(rm)):
+            for root, dirs, files in os.walk(path[k]):
+                for file in files:
+                    if rm[i] in file:
+                        os.remove(os.path.join(path[k], file))
+                        if log:
+                            logging(path[k], file)
 
 
-
-
-def walklevel(some_dir, level):
-    some_dir = some_dir.rstrip(os.path.sep)
-    assert os.path.isdir(some_dir)
-    num_sep = some_dir.count(os.path.sep)
-    for root, dirs, files in os.walk(some_dir):
-        yield root, dirs, files
-        num_sep_this = root.count(os.path.sep)
-        if num_sep + level <= num_sep_this:
-            del dirs[:]
-
-
-'''
-def move_files(dir, create_folder, dir_name):
-    if create_folder:
-        for subdir, dirs, files in os.walk(dir):
-            new_folder = subdir + dirs
-            if not os.path.exists(new_folder):
-                os.makedirs(dir_name)
-                os.rename(subdir + dirs + files, subdir + dirs)
-    else:
-'''
-
+def logging(path, filename):
+    log_c = 0
+    today = datetime.date.today()
+    f = open(dir + '\\REMOVED_FILES_log.txt', 'a+')
+    if log_c == 0:
+        f.write('\n\n')
+        f.write('==========\t' + f'{today}' + '\t==========\n')
+    f.write('removed\t' + f'{filename}' + '\tfrom dir\t' + path + '\n')
+    f.close()
+    log_c += 1
+    
 
 def rename_file(path, rep, repw):
     if len(rep) != len(repw):
@@ -53,20 +51,20 @@ def rename_file(path, rep, repw):
                             os.rename(os.path.join(root, file), os.path.join(root, new_file))
         print('Done...' + f'{n}' + ' files were renamed.')
 
-
-
-
-
+        
 def main():
     base_dir = r'.'
-    list_rep = ['_00_', '_000_', '_0000_', '_00000_']
-    list_repw = ['_4u8mm_', '_12u16mm_', '_20u24mm_', '_28u32mm_']
+    list_rep = ['_0_']
+    list_repw = ['_refs_']
+    list_rm = ['_DarkImage', '_I0Image']
 
-
+    remove_file(base_dir, rm=list_rm, log=True)
     rename_file(path=base_dir, rep=list_rep, repw=list_repw)
 
 
 if __name__ == '__main__':
     main()
+
+
 
 
