@@ -1,4 +1,5 @@
 import os
+import glob
 
 def separate_suffix(filename):
     split_list = filename.split('.')
@@ -9,45 +10,63 @@ def separate_suffix(filename):
         return filename, ''
 
 
-def rename_file(dir, rep, repw):
-    if isinstance(dir, str) and isinstance(rep, str) and isinstance(repw, str):
-        n = 0
-        for subdir, dirs, files in os.walk(dir):
-            for file in files:
-                if rep in file:
-                    n += 1
-                    new_file = file.replace(rep, repw, 1)
-                    os.rename(os.path.join(subdir, file), os.path.join(subdir, new_file))
-        if 0 < n:
-            print(f'Done. {n} files were renamed.')
-        else:
-            print(f'No {rep} were found. Are you sure you spelled {rep} correct? Also check base directory.')
-    else:
-        #print(f'No parameter are passed: dir: {dir}, rep: {rep}, repw: {repw}')
-        print('passed parameter must be strings!')
-        print(f'=> passed value for {dir} is a {type(dir)}')
-        print(f'=> passed value for {rep} is a {type(rep)}')
-        print(f'=> passed value for {repw} is a {type(repw)}')
 
 
+
+
+def walklevel(some_dir, level):
+    some_dir = some_dir.rstrip(os.path.sep)
+    assert os.path.isdir(some_dir)
+    num_sep = some_dir.count(os.path.sep)
+    for root, dirs, files in os.walk(some_dir):
+        yield root, dirs, files
+        num_sep_this = root.count(os.path.sep)
+        if num_sep + level <= num_sep_this:
+            del dirs[:]
+
+
+'''
 def move_files(dir, create_folder, dir_name):
     if create_folder:
         for subdir, dirs, files in os.walk(dir):
-            new_folder = subdir + dirs + '\images'
+            new_folder = subdir + dirs
             if not os.path.exists(new_folder):
                 os.makedirs(dir_name)
                 os.rename(subdir + dirs + files, subdir + dirs)
-    #else:
+    else:
+'''
+
+
+def rename_file(path, rep, repw):
+    if len(rep) != len(repw):
+        print('the length (its entries) of the passed lists are not equal!')
+    else:
+        path = glob.glob(path + '\\*')
+        n = 0
+        for k in range(len(path)):
+            for i in range(len(rep)):
+                for root, dirs, files in os.walk(path[k]):
+                    for file in files:
+                        if rep[i] in file:
+                            n += 1
+                            new_file = file.replace(rep[i], repw[i], 1)
+                            os.rename(os.path.join(root, file), os.path.join(root, new_file))
+        print('Done...' + f'{n}' + ' files were renamed.')
+
+
 
 
 
 def main():
     base_dir = r'\\132.187.193.8\junk\sgrischagin\Dritte_Messung'
-    replace = '_0_'
-    replace_with = '_refs_'
-    rename_file(dir=base_dir, rep=replace, repw=replace_with)
+    #replace = '_00_'
+    #replace_with = '_4u8mm_'
+    list_rep = ['_00_', '_000_', '_0000_', '_00000_']
+    list_repw = ['_4u8mm_', '_12u16mm_', '_20u24mm_', '_28u32mm_']
 
-    #move_files(dir=base_dir, create_folder=True, dir_name='images')
+
+    rename_file(path=base_dir, rep=list_rep, repw=list_repw)
+
 
 if __name__ == '__main__':
     main()
