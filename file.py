@@ -23,7 +23,7 @@ def remove_file(dir, rm, log):
                         if log:
                             logging(path[k], file)
 
-
+# TODO: move_files!
 def move_files(path, condition, target):
     for path, dirs, files in os.walk(path):
         for i in range(len(dirs)):
@@ -36,17 +36,6 @@ def move_files(path, condition, target):
                         if not os.path.exists(target_dir):
                             os.makedirs(target_dir)
                         os.rename(new_root + '\\' + target[k], target_dir + '\\' + file)
-
-
-
-                    for l in range(len(target)):
-                        target_dir = subpath + '\\' + target[l]
-                        for file in subfiles:
-                            for j in range(len(condition)):
-                                if condition[j] in file:
-                                    if not os.path.exists(target_dir):
-                                        os.makedirs(target_dir)
-                                    os.rename(subpath + '\\' + file, target_dir + '\\' + file)
 
 
 def create_subdirs(path, target):
@@ -68,25 +57,6 @@ def create_subdirs2(path, target):
                 print('created folder in: ' f'{target_dir}.')
             else:
                 print('subdir exists already.')
-
-
-
-'''
-def move_files(path, condition, target):
-    for path, dirs, files in os.walk(path):
-        for i in range(len(dirs)):
-            new_root = path + '\\' + dirs[i]
-            for subpath, subdir, subfiles in os.walk(new_root):
-                target_dir = subpath + '\\' + target
-                for file in subfiles:
-                    for j in range(len(condition)):
-                        if condition[j] in file:
-                            if not os.path.exists(target_dir):
-                                os.makedirs(target_dir)
-                            os.rename(subpath + '\\' + file, target_dir + '\\' + file)
-'''
-
-
 
 
 def logging(path, filename):
@@ -132,4 +102,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
