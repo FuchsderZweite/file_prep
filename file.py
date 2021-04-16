@@ -2,6 +2,7 @@ import os
 import glob
 import datetime
 
+
 def separate_suffix(filename):
     split_list = filename.split('.')
     if len(split_list) > 1:
@@ -23,6 +24,71 @@ def remove_file(dir, rm, log):
                             logging(path[k], file)
 
 
+def move_files(path, condition, target):
+    for path, dirs, files in os.walk(path):
+        for i in range(len(dirs)):
+            new_root = path + '\\' + dirs[i]
+            for subpath, subdir, subfiles in os.walk(new_root):
+                # check if targets exist here:
+                for k in range(len(subdir)):
+                    target_dir = new_root + '\\' + target[k]
+                    for q in subdir:
+                        if not os.path.exists(target_dir):
+                            os.makedirs(target_dir)
+                        os.rename(new_root + '\\' + target[k], target_dir + '\\' + file)
+
+
+
+                    for l in range(len(target)):
+                        target_dir = subpath + '\\' + target[l]
+                        for file in subfiles:
+                            for j in range(len(condition)):
+                                if condition[j] in file:
+                                    if not os.path.exists(target_dir):
+                                        os.makedirs(target_dir)
+                                    os.rename(subpath + '\\' + file, target_dir + '\\' + file)
+
+
+def create_subdirs(path, target):
+    for subpath, subdir, subfiles in os.walk(path, topdown=True):
+        for j in range(len(subdir)):
+            for i in range(len(target)):
+                target_dir = path + '\\' + subdir[j] + '\\' + target[i]
+                if not os.path.exists(target_dir):
+                    os.makedirs(target_dir)
+
+
+def create_subdirs2(path, target):
+
+    for subpath, subdir, subfiles in os.walk(path):
+        target_dir = path + '\\' + target[i]
+        for i in range(len(target)):
+            if not os.path.exists(target_dir):
+                os.makedirs(target_dir)
+                print('created folder in: ' f'{target_dir}.')
+            else:
+                print('subdir exists already.')
+
+
+
+'''
+def move_files(path, condition, target):
+    for path, dirs, files in os.walk(path):
+        for i in range(len(dirs)):
+            new_root = path + '\\' + dirs[i]
+            for subpath, subdir, subfiles in os.walk(new_root):
+                target_dir = subpath + '\\' + target
+                for file in subfiles:
+                    for j in range(len(condition)):
+                        if condition[j] in file:
+                            if not os.path.exists(target_dir):
+                                os.makedirs(target_dir)
+                            os.rename(subpath + '\\' + file, target_dir + '\\' + file)
+'''
+
+
+
+
 def logging(path, filename):
     log_c = 0
     today = datetime.date.today()
@@ -30,10 +96,10 @@ def logging(path, filename):
     if log_c == 0:
         f.write('\n\n')
         f.write('==========\t' + f'{today}' + '\t==========\n')
-    f.write('removed\t' + f'{filename}' + '\tfrom dir\t' + path + '\n')
+    f.write('REMOVED\t' + f'{filename}' + '\tFROM DIR\t' + path + '\n')
     f.close()
     log_c += 1
-    
+
 
 def rename_file(path, rep, repw):
     if len(rep) != len(repw):
@@ -51,20 +117,19 @@ def rename_file(path, rep, repw):
                             os.rename(os.path.join(root, file), os.path.join(root, new_file))
         print('Done...' + f'{n}' + ' files were renamed.')
 
-        
+
 def main():
     base_dir = r'.'
+
     list_rep = ['_0_']
     list_repw = ['_refs_']
+
     list_rm = ['_DarkImage', '_I0Image']
 
-    remove_file(base_dir, rm=list_rm, log=True)
-    rename_file(path=base_dir, rep=list_rep, repw=list_repw)
+    list_condition = ['_4u8mm_', '_12u16mm_', '_20u24mm_', '_28u32mm_']
+    list_target = ['4u8mm', '12u16mm', '20u24mm', '28u32mm']
 
 
 if __name__ == '__main__':
     main()
-
-
-
 
