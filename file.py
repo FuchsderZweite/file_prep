@@ -75,7 +75,7 @@ def find_match(path, condition, target):
 
 
 def logging(path, filename):
-    log_file_dir = r'\\132.187.193.8\junk\sgrischagin\Dritte_Messung'
+    log_file_dir = r'.'
     log_c = 0
     today = datetime.date.today()
     f = open(log_file_dir + '\\REMOVED_FILES_log.txt', 'a+')
