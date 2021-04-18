@@ -1,6 +1,7 @@
 import os
 import glob
 import time
+import datetime
 
 
 def separate_suffix(filename):
@@ -13,15 +14,19 @@ def separate_suffix(filename):
 
 
 def remove_file(dir, rm, log):
-    path = glob.glob(dir + '\\*')
-    for k in range(len(path)):
-        for i in range(len(rm)):
-            for root, dirs, files in os.walk(path[k]):
-                for file in files:
-                    if rm[i] in file:
-                        os.remove(os.path.join(path[k], file))
-                        if log:
-                            logging(path[k], file)
+    for dir, subdirs, files in os.walk(dir):
+        #path = glob.glob(dir + '\\*')
+        for k in range(len(subdirs)):
+            new_root = dir + '\\' + subdirs[k]
+            for root, dirs, files in os.walk(new_root):
+                for j in range(len(dirs)):
+                    new_subroot = new_root + '\\' + dirs[j]
+                    for file in os.listdir(new_subroot):
+                        for i in range(len(rm)):
+                            if rm[i] in file:
+                                os.remove(os.path.join(new_subroot, file))
+                                if log:
+                                    logging(new_subroot, file)
 
 
 def move_files(path, condition, target):
@@ -69,26 +74,11 @@ def find_match(path, condition, target):
                         return old_file_path, new_file_path
 
 
-'''
-def move_files(path, condition, target):
-    for path, dirs, files in os.walk(path):
-        for i in range(len(dirs)):
-            new_root = path + '\\' + dirs[i]
-            for subpath, subdir, subfiles in os.walk(new_root):
-                target_dir = subpath + '\\' + target
-                for file in subfiles:
-                    for j in range(len(condition)):
-                        if condition[j] in file:
-                            if not os.path.exists(target_dir):
-                                os.makedirs(target_dir)
-                            os.rename(subpath + '\\' + file, target_dir + '\\' + file)
-'''
-
-
 def logging(path, filename):
+    log_file_dir = r'\\132.187.193.8\junk\sgrischagin\Dritte_Messung'
     log_c = 0
     today = datetime.date.today()
-    f = open(dir + '\\REMOVED_FILES_log.txt', 'a+')
+    f = open(log_file_dir + '\\REMOVED_FILES_log.txt', 'a+')
     if log_c == 0:
         f.write('\n\n')
         f.write('==========\t' + f'{today}' + '\t==========\n')
@@ -120,11 +110,11 @@ def main():
     list_rep = ['_0_']
     list_repw = ['_refs_']
 
-    list_rm = ['_DarkImage', '_I0Image']
+    list_rm = ['.raw']
 
     list_condition = ['_4u8mm_', '_12u16mm_', '_20u24mm_', '_28u32mm_']
     list_target = ['4u8mm', '12u16mm', '20u24mm', '28u32mm']
-
+    
 
 if __name__ == '__main__':
     main()
