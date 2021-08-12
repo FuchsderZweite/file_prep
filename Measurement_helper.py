@@ -55,7 +55,7 @@ def fit_func(x, a, t):
 
 
 def write_data(a, t, path, dot, dir, p):
-    path_save = r'\\132.187.193.8\junk\sgrischagin'
+    path_save = r'.'
     with open(os.path.join(path_save, 'checked_files.txt'), 'a+') as f:
         f.write(f'{path};{dir};{p};{dot};{a};{t}\n')
         f.close()
@@ -91,9 +91,7 @@ def main():
     pixel_size_units = '$\mu m$'
     smallest_size = None
 
-    path_raw_data = [r'\\132.187.193.8\junk\sgrischagin\2021-04-08_Sergej_SNR_AluKeil_0mm_AluFilter',
-                     r'\\132.187.193.8\junk\sgrischagin\2021-05-03_Sergej_SNR_AluKeil_1mm_AluFilter',
-                     r'\\132.187.193.8\junk\sgrischagin\2021-04-29_Sergej_SNR_AluKeil_2mm_AluFilter']
+    path_raw_data = ['.']
     #dir = r'40_kV'
     pattern = ['_0_', '_00_', '_000_', '_0000_']
 
