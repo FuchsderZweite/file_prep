@@ -1,5 +1,4 @@
 import os
-import glob
 import time
 import datetime
 
@@ -15,67 +14,18 @@ def separate_suffix(filename):
 
 def remove_file(dir, rm, log):
     for dir, subdirs, files in os.walk(dir):
-        #path = glob.glob(dir + '\\*')
         for k in range(len(subdirs)):
-            new_root = dir + '\\' + subdirs[k]
-            for root, dirs, files in os.walk(new_root):
-                for j in range(len(dirs)):
-                    new_subroot = new_root + '\\' + dirs[j]
-                    for file in os.listdir(new_subroot):
-                        for i in range(len(rm)):
-                            if rm[i] in file:
-                                os.remove(os.path.join(new_subroot, file))
-                                if log:
-                                    logging(new_subroot, file)
-
-
-def move_files(path, condition, target):
-    for path, dirs, files in os.walk(path):
-        for i in range(len(dirs)):
-            new_base = path + '\\' + dirs[i]
-            for j in range(len(target)):
-                if not os.path.exists(new_base):
-                    create_subdirs(new_base)
-                else:
-                    for file in os.listdir(new_base):
-                        if os.listdir(new_base):
-                            for k in range(len(condition)):
-                                if condition[k] in file:
-                                    target_dir = new_base + '\\' + target[k]
-                                    old_file_path = os.path.join(new_base, file)
-                                    new_file_path = os.path.join(target_dir, file)
-                                    os.rename(old_file_path, new_file_path)
-                                    while not os.path.exists(new_file_path):
-                                        time.sleep(1)
-                                        print('waiting for copy process is done.')
-                                        print('new_base: ' + new_base)
-
-
-def create_subdirs(path):
-    os.makedirs(path)
-    #for subpath, subdir, subfiles in os.walk(path, topdown=True):
-    #    for j in range(len(subdir)):
-    #        for i in range(len(target)):
-    #            target_dir = path + '\\' + subdir[j] + '\\' + target[i]
-    #            if not os.path.exists(target_dir):
-    #                os.makedirs(target_dir)
-
-
-def find_match(path, condition, target):
-    if len(condition) != len(target):
-        print('lists are not equal in size!.')
-    else:
-        for dir, subdir, files in os.walk(path):
-            for i in range(len(condition)):
-                for file in files:
-                    if condition[i] in file:
-                        old_file_path = path + '\\' + file
-                        new_file_path = path + '\\' + target[i] + '\\' + file
-                        return old_file_path, new_file_path
+            _dir = os.path.join(dir, subdirs[k])
+            for file in os.listdir(_dir):
+                for _r in rm:
+                    if _r in file:
+                        os.remove(os.path.join(_dir, file))
+                        if log:
+                            logging(_dir, file)
 
 
 def logging(path, filename):
-    log_file_dir = r'.'
+    log_file_dir = r'\\132.187.193.8\junk\sgrischagin'
     log_c = 0
     today = datetime.date.today()
     f = open(log_file_dir + '\\REMOVED_FILES_log.txt', 'a+')
@@ -87,35 +37,81 @@ def logging(path, filename):
     log_c += 1
 
 
-def rename_file(path, rep, repw):
-    if len(rep) != len(repw):
-        print('the length (its entries) of the passed lists are not equal!')
-    else:
-        path = glob.glob(path + '\\*')
-        n = 0
-        for k in range(len(path)):
-            for i in range(len(rep)):
-                for root, dirs, files in os.walk(path[k]):
-                    for file in files:
-                        if rep[i] in file:
-                            n += 1
-                            new_file = file.replace(rep[i], repw[i], 1)
-                            os.rename(os.path.join(root, file), os.path.join(root, new_file))
-        print('Done...' + f'{n}' + ' files were renamed.')
+def move_n_sort(path, filter, condition, target):
+    count = 0
+    path_refs = None
+    _subdir_img = None
+    fin = False
+    for dir in os.listdir(path):
+        if os.path.isdir(os.path.join(path, dir)) and dir != 'darks' and dir != 'refs':
+            _dir = os.path.join(path, dir)
+            if not os.path.exists(os.path.join(_dir, 'imgs')):
+                create_subdirs(os.path.join(_dir, 'imgs'))
+            if not os.path.exists(os.path.join(_dir, 'refs')):
+                create_subdirs(os.path.join(_dir, 'refs'))
+            path_refs = os.path.join(_dir, 'refs')
+            _subdir_img = os.path.join(_dir, 'imgs')
+            for _f in filter:
+                if not os.path.exists(os.path.join(_subdir_img, _f)):
+                    create_subdirs(os.path.join(_subdir_img, _f))
+                    _subsubdir_img = os.path.join(_subdir_img, _f)
+                for _a in range(1, len(target)):
+                    if not os.path.exists(os.path.join(_subdir_img, _f, target[_a])):
+                        create_subdirs(os.path.join(_subdir_img, _f, target[_a]))
+
+        for file in os.listdir(_dir):
+            if condition[0] in file:
+                _move_file(os.path.join(_dir, file), os.path.join(path_refs, file))
+            else:
+                for f in filter:
+                    if f in file:
+                        for k in range(1, len(condition)):
+                            if condition[k] in file:
+                                print(f'condition match!{dir} - {file}')
+                                count += 1
+                                _move_file(os.path.join(_dir, file) ,os.path.join(_dir, 'imgs', f, target[k], file))
+                                while not os.path.exists(os.path.join(_dir, 'imgs', f, target[k])):
+                                    time.sleep(100)
+                                    print('waiting for copy process is done.')
+        if len(dir) == 2:
+            fin = True
+    if fin:
+        print(f'Done. {count} files were moved.')
 
 
-def main():
-    base_dir = r'.'
+def _move_file(o_path, n_path):
+    old_file_path = os.path.join(o_path)
+    new_file_path = os.path.join(n_path)
+    os.rename(old_file_path, new_file_path)
 
-    list_rep = ['_0_']
-    list_repw = ['_refs_']
 
-    list_rm = ['.raw']
+def create_subdirs(path):
+    os.makedirs(path)
 
-    list_condition = ['_4u8mm_', '_12u16mm_', '_20u24mm_', '_28u32mm_']
-    list_target = ['4u8mm', '12u16mm', '20u24mm', '28u32mm']
-    
+
+def wait(path, t):
+    while not os.path.exists(path):  # faced regularly issues due to working on not existing path (writing to network is slow)
+        time.sleep(t)
+
 
 if __name__ == '__main__':
-    main()
+    start = time.time()
+    base_dir = r'.'
 
+
+    ''' === remove unnecessary data ============================== '''
+    list_rm = ['_I0Image', '_DarkImage']
+    remove_file(dir=base_dir, rm=list_rm, log=True)
+    ''' ========================================================== '''
+
+
+    ''' ==== moving raw data in specific folder for structure ===  '''
+    list_filter = ['_none_', '_1mm Al_', '_2mm Al_']
+    # put your relative positions where the projections were made here:
+    # Caution! the very first index (list_condition_pos[0]) must be the flat-images position!
+    list_condition_pos = ['_-65p00_', '_-46p70_', '_-26p60_', '_-6p55_', '13p55']
+    list_target = ['refs', '_1-area_', '_2-area_', '_3-area_', '_4-area_']
+    move_n_sort(path=base_dir, filter=list_filter, condition=list_condition_pos, target=list_target)
+    '''  ========================================================= '''
+
+    print(f'Time: {(time.time() - start) / 60} min')
