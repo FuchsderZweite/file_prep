@@ -1,5 +1,4 @@
 import os
-import glob
 import time
 import datetime
 
@@ -23,19 +22,6 @@ def remove_file(dir, rm, log):
                         os.remove(os.path.join(_dir, file))
                         if log:
                             logging(_dir, file)
-
-
-def find_match(path, condition, target):
-    if len(condition) != len(target):
-        print('lists are not equal in size!.')
-    else:
-        for dir, subdir, files in os.walk(path):
-            for i in range(len(condition)):
-                for file in files:
-                    if condition[i] in file:
-                        old_file_path = path + '\\' + file
-                        new_file_path = path + '\\' + target[i] + '\\' + file
-                        return old_file_path, new_file_path
 
 
 def logging(path, filename):
@@ -85,7 +71,7 @@ def move_n_sort(path, filter, condition, target):
                                 count += 1
                                 _move_file(os.path.join(_dir, file) ,os.path.join(_dir, 'imgs', f, target[k], file))
                                 while not os.path.exists(os.path.join(_dir, 'imgs', f, target[k])):
-                                    time.sleep(100)
+                                    time.sleep(2)
                                     print('waiting for copy process is done.')
         if len(dir) == 2:
             fin = True
@@ -128,4 +114,4 @@ if __name__ == '__main__':
     move_n_sort(path=base_dir, filter=list_filter, condition=list_condition_pos, target=list_target)
     '''  ========================================================= '''
 
-    print(f'Time: {(time.time() - start) / 60} min')
+    print(f'Time: {round((time.time() - start) / 60)} min')
