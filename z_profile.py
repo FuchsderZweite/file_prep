@@ -45,7 +45,8 @@ def plot_Z_profile(img, path_to_imgs, dir, a, f):
             x_fit = range(100)
             params, _ = curve_fit(fit_func, x_fit, pixel)
             axs[k, l].plot(np.arange(img.shape[0]), pixel)
-            axs[k, l].plot(np.arange(img.shape[0]), fit_func(x_fit, params[0], params[1]), linestyle='--', label=f'm: {Decimal(params[0]):.2E}\n t: {Decimal(params[1]):.2E}')
+            axs[k, l].plot(np.arange(img.shape[0]), fit_func(x_fit, params[0], params[1]), linestyle='--', 
+                           label=f'm: {Decimal(params[0]):.2E}\n t: {Decimal(params[1]):.2E}')
             axs[k, l].legend(loc='upper right')
             axs[k, l].set_title(f'pixel: {dots[num]}')
             write_data(params[0], params[1], path_to_imgs, dots[num], dir, f, a)
@@ -67,7 +68,7 @@ def fit_func(x, a, t):
 
 
 def write_data(m, t, path, dot, dir, f, a):
-    path_save = r'\\132.187.193.8\junk\sgrischagin'
+    path_save = r''
     with open(os.path.join(path_save, 'checked_files.txt'), 'a+') as file:
         file.write(f'{path};{dir};{f};{a};{dot};{m};{t}\n')
         file.close()
@@ -90,9 +91,9 @@ def main():
     pixel_size_units = '$\mu m$'
     smallest_size = None
 
-    path_raw_data = r'\\132.187.193.8\junk\sgrischagin\2021-08-09-Sergej_SNR_Stufelkeil_40-75kV'
-    path_darks = r'\\132.187.193.8\junk\sgrischagin\2021-08-09-Sergej_SNR_Stufelkeil_40-75kV\darks'
-    #dir = r'40_kV'
+    path_raw_data = r''
+    path_darks = r''
+
     filter = ['_none_', '_1mm Al_', '_2mm Al_']
     areas = ['_1-area_', '_2-area_', '_3-area_', '_4-area_']
 
@@ -101,16 +102,20 @@ def main():
     darks = None
     exeptions = ['40kV', '45kV', '50kV', '55kV', '60kV', '100kV']
 
-    darks = file.volume.Reader(path_darks, mode='raw', shape=image_shape, header=header, value_range=val_range, do_rescale=rescale).load_all()
+    darks = file.volume.Reader(path_darks, mode='raw', shape=image_shape, header=header, 
+                               value_range=val_range, do_rescale=rescale).load_all()
     for dir in os.listdir(path_raw_data):
         if 'kV' in dir:
             if dir not in exeptions:
                 for f in filter:
                     for a in areas:
-                        print(f'used memory (before reading imags and refs): {round(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2)} MB')
+                        print(f'used memory (before reading imags and refs): 
+                              {round(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2)} MB')
                         path_imgs, path_refs, _ = prepare_imgs(path_raw_data, dir, f, a)
-                        imgs = file.volume.Reader(path_imgs, mode='raw', shape=image_shape, header=header, value_range=val_range,do_rescale=rescale).load_all()
-                        refs = file.volume.Reader(path_refs, mode='raw', shape=image_shape, header=header, value_range=val_range, do_rescale=rescale).load_all()
+                        imgs = file.volume.Reader(path_imgs, mode='raw', shape=image_shape, header=header, 
+                                                  value_range=val_range,do_rescale=rescale).load_all()
+                        refs = file.volume.Reader(path_refs, mode='raw', shape=image_shape, header=header, 
+                                                  value_range=val_range, do_rescale=rescale).load_all()
 
                         # TODO: crop data before passing to plot. Crop 3x3 square around the set 'dots'
                         img = (imgs - darks) / (refs - darks)
