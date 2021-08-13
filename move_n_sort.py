@@ -25,7 +25,7 @@ def remove_file(dir, rm, log):
 
 
 def logging(path, filename):
-    log_file_dir = r'\\132.187.193.8\junk\sgrischagin'
+    log_file_dir = r''
     log_c = 0
     today = datetime.date.today()
     f = open(log_file_dir + '\\REMOVED_FILES_log.txt', 'a+')
@@ -96,7 +96,7 @@ def wait(path, t):
 
 if __name__ == '__main__':
     start = time.time()
-    base_dir = r'\\132.187.193.8\junk\sgrischagin\2021-08-09-Sergej_SNR_Stufelkeil_40-75kV'
+    base_dir = r''
 
 
     ''' === remove unnecessary data ============================== '''
